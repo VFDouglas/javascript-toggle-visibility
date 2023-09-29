@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <style>
+            table {
+                width: 100%;
+            }
+        </style>
+        <button onclick="toggleVisibility(document.getElementById('p1'), 'T', 500)">SHOW HIDE</button>
+        <table id="p1">
+            <thead>
+                <th>TEST</th>
+                <th>TEST</th>
+                <th>TEST</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>TEST</td>
+                    <td>TEST</td>
+                    <td>TEST</td>
+                </tr>
+                <tr>
+                    <td>TEST</td>
+                    <td>TEST</td>
+                    <td>TEST</td>
+                </tr>
+                <tr>
+                    <td>TEST</td>
+                    <td>TEST</td>
+                    <td>TEST</td>
+                </tr>
+            </tbody>
+        </table>
+        <script>
+            /**
+             * Toggle, show or hide the selected HTML element
+             * @param {HTMLElement} element HTML element to toggle
+             * @param {string} type Type of toggle | S = show | H = hide | T = toggle
+             * @param {int} delay Delay in milliseconds
+             */
+            function toggleVisibility(element, type = 'T', delay = 0) {
+                if (!element) {
+                    console.error('The element should be a valid HTML element');
+                    return false;
+                }
+                // Setting max transition values. Change it to your own preference.
+                if (delay < 0) {
+                    delay = 0;
+                } else if (delay > 10000) {
+                    delay = 10000;
+                }
+
+                /**
+                 * Time which the interval will run
+                 * @type {number}
+                 */
+                let intervalTime = 10;
+                let amountLoops  = Math.ceil(delay / intervalTime);
+                let doneLoops    = 0;
+
+                /**
+                 * Checks if the element is gonna be shown or hidden
+                 */
+                let showHide;
+                if (type == 'H' || (type == 'T' && element.style.display != 'none')) {
+                    showHide = 'H';
+                } else if (type == 'T' || (type == 'T' && element.style.display == 'none')) {
+                    showHide = 'S';
+
+                    // Brifly showing the element to capture the measures (width, height and opacity)
+                    element.style.display = '';
+                }
+
+                let width   = +window.getComputedStyle(element, null).width.replace('px', '') || 0;
+                let height  = +window.getComputedStyle(element, null).height.replace('px', '') || 0;
+                let opacity = +window.getComputedStyle(element, null).opacity || 0;
+
+                let widthPerLoop, heightPerLoop, opacityPerLoop;
+                let newWidth, newHeight, newOpacity;
+
+                // Calculating the amount of increase/decrease needed according to the amount of loops
+                widthPerLoop   = width / amountLoops;
+                heightPerLoop  = height / amountLoops;
+                opacityPerLoop = opacity / amountLoops;
+
+                const INTERVAL = setInterval(() => {
+                    // When the animation is done, we need to remove the custom style attributes
+                    if (doneLoops == amountLoops) {
+                        element.style.width   = '';
+                        element.style.height  = '';
+                        element.style.opacity = '';
+                        if (showHide == 'H') {
+                            element.style.display = 'none';
+                        } else {
+                            element.style.display = '';
+                        }
+                        clearInterval(INTERVAL);
+                        return false;
+                    }
+
+                    if (showHide == 'H') {
+                        newWidth   = width - widthPerLoop * (doneLoops + 1);
+                        newHeight  = height - heightPerLoop * (doneLoops + 1);
+                        newOpacity = opacity - opacityPerLoop * (doneLoops + 1);
+                    } else {
+                        newWidth   = widthPerLoop * (doneLoops + 1);
+                        newHeight  = heightPerLoop * (doneLoops + 1);
+                        newOpacity = opacityPerLoop * (doneLoops + 1);
+                    }
+
+                    element.style.width   = `${Math.max(newWidth, 0)}px`;
+                    element.style.height  = `${Math.max(newHeight, 0)}px`;
+                    element.style.opacity = `${Math.max(newOpacity, 0)}`;
+
+                    doneLoops++;
+                }, intervalTime);
+            }
+        </script>
+    </body>
+</html>

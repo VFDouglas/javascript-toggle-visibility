@@ -76,6 +76,8 @@
                 } else if (type == 'T' || (type == 'T' && element.style.display == 'none')) {
                     showHide = 'S';
 
+                    // Setting opacity to 0 to keep the animation fluid
+                    element.style.opacity = '0';
                     // Brifly showing the element to capture the measures (width, height and opacity)
                     element.style.display = '';
                 }
@@ -90,7 +92,7 @@
                 // Calculating the amount of increase/decrease needed according to the amount of loops
                 widthPerLoop   = width / amountLoops;
                 heightPerLoop  = height / amountLoops;
-                opacityPerLoop = opacity / amountLoops;
+                opacityPerLoop = 1 / amountLoops;
 
                 const INTERVAL = setInterval(() => {
                     // When the animation is done, we need to remove the custom style attributes
